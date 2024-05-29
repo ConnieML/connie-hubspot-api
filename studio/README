@@ -1,0 +1,5 @@
+this is a sample Twilio Studio flow for a Hubspot integration. It just executes the Twilio function and passes the information to Flex.
+
+To use it, create a new Studio flow through the Twilio Console and select the Import from JSON option, then paste the content on the json document.
+
+Make sure you edit the "Fetch_CRM_ID" node so that it runs the Twilio Function.

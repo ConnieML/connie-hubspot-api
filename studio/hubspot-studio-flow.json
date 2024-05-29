@@ -1,0 +1,135 @@
+{
+    "description": "A New Flow",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "next": "Fetch_CRM_ID",
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      },
+      {
+        "name": "Fetch_CRM_ID",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "Play_Welcome_message",
+            "event": "success"
+          },
+          {
+            "next": "send_to_cc_failure_scenario",
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": "ZS15e087cbd3628d7b52a4ce84a459dcf8",
+          "environment_sid": "ZE504b6f5580078e110399993ad07085d3",
+          "offset": {
+            "x": 180,
+            "y": 230
+          },
+          "function_sid": "ZH9f444af71aba0270bb1854e5cd289ee6",
+          "parameters": [
+            {
+              "value": "{{trigger.call.From}}",
+              "key": "from"
+            }
+          ],
+          "url": "https://hubspot-5211.twil.io/getContactID"
+        }
+      },
+      {
+        "name": "send_to_contact-centre",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 250,
+            "y": 790
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC7239cd75c1565ace1c1220ac56069c59",
+          "attributes": "{ \"type\": \"inbound\", \"name\": \"{{widgets.Fetch_CRM_ID.parsed.firstname}}\", \"crmid\":\"{{widgets.Fetch_CRM_ID.parsed.crmid}}\"}"
+        }
+      },
+      {
+        "name": "Play_Welcome_message",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "send_to_contact-centre",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Amy-Neural",
+          "offset": {
+            "x": 190,
+            "y": 500
+          },
+          "loop": 1,
+          "say": "Welcome {{widgets.Fetch_CRM_ID.parsed.firstname}}\"",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "send_to_cc_failure_scenario",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 830,
+            "y": 490
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC7239cd75c1565ace1c1220ac56069c59",
+          "attributes": "{ \"type\": \"inbound\"}"
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }

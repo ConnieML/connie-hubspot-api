@@ -1,0 +1,12 @@
+Make sure you add the following environment variables:
+HUBSPOT_TOKEN = <your hubspot bearer token>
+
+Make sure you add the following dependencies:
+axios
+
+
+Hubspot guide to get the token: https://developers.hubspot.com/docs/api/migrate-an-api-key-integration-to-a-private-app?_ga=2.228675743.2091289901.1659952044-2109312904.1659705843&_gac=1.124055672.1659705862.Cj0KCQjw_7KXBhCoARIsAPdPTfjgtBGaaxmXr4Bl1d1iDogPL8xjmrXo-VeTP9rjrml9BDX1_RqLOJ4aAkz-EALw_wcB
+
+
+To test this function you can make it public temporarily and then access it via browser with a 'from' url parameter. Example: https://hub1231-5211.twil.io/getContactID?from=+447123123123 , assuming you have +447123123123 as a test contact record on hubspot, you will receive a response like:
+{"crmid":"101","firstname":"Richie","lastname":"Balelas"}

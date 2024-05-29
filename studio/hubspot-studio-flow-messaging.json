@@ -1,0 +1,139 @@
+{
+    "description": "Messaging flow",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "next": "Fetch_CRM_ID",
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 0,
+            "y": -10
+          }
+        }
+      },
+      {
+        "name": "Fetch_CRM_ID",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "SendGreeting",
+            "event": "success"
+          },
+          {
+            "next": "Flex-NoID",
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": "ZS1664b2d669109f9aceb0f14914c9d0d8",
+          "environment_sid": "ZE504b6f5580078e110399993ad07085d3",
+          "offset": {
+            "x": 260,
+            "y": 270
+          },
+          "function_sid": "ZH9f444af71aba0270bb1854e5cd289ee6",
+          "parameters": [
+            {
+              "value": "{{contact.channel.address}}",
+              "key": "from"
+            }
+          ],
+          "url": "https://hubspot-5211.twil.io/getContactID"
+        }
+      },
+      {
+        "name": "SendConversationToAgent",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -40,
+            "y": 830
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC2522a3ba2ecb10c17ffa318ca34bb73a",
+          "attributes": "{ \"type\": \"inbound\", \"name\": \"{{widgets.Fetch_CRM_ID.parsed.firstname}}\", \"crmid\":\"{{widgets.Fetch_CRM_ID.parsed.crmid}}\"}"
+        }
+      },
+      {
+        "name": "Flex-NoID",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 660,
+            "y": 790
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC2522a3ba2ecb10c17ffa318ca34bb73a"
+        }
+      },
+      {
+        "name": "SendGreeting",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "SendConversationToAgent",
+            "event": "sent"
+          },
+          {
+            "next": "SendConversationToAgent",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -60,
+            "y": 550
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "to": "{{contact.channel.address}}",
+          "body": "Hello {{widgets.Fetch_CRM_ID.parsed.firstname}}, thank you for contacting us. One of our representatives will get in touch with you shortly."
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
