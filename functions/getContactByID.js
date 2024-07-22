@@ -14,6 +14,7 @@ exports.handler=function(context, event, callback) {
   const url='https://api.hubapi.com/contacts/v1/search/query?q='+ from;
   axios({
       method: 'get',
+      crossdomain: true,
       url: url,
       headers: {Authorization: `Bearer `+ context.HUBSPOT_TOKEN, 'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
   })
