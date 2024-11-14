@@ -1,4 +1,6 @@
 import { FlexPlugin } from '@twilio/flex-plugin';
+import React from 'react';
+import PhoneNumberInput from './PhoneNumberInput'; // Adjust the path if needed
 
 const PLUGIN_NAME = 'HubspotPlugin';
 
@@ -7,21 +9,21 @@ export default class HubspotPlugin extends FlexPlugin {
     super(PLUGIN_NAME);
   }
 
-  /**
-   * This code is run when your plugin is being started
-   * Use this to modify any UI components or attach to the actions framework
-   *
-   * @param flex { typeof import('@twilio/flex-ui') }
-   */
   async init(flex, manager) {
-
-    //If there is a task and the task has a crm ID, screenpop customer record. Otherwise show the list of contacts
+    // Add the PhoneNumberInput component to AgentDesktopView
+    flex.AgentDesktopView.Panel2.Content.add(<PhoneNumberInput key="phone-number-input" />, {
+      sortOrder: -1,
+    });
+    // Set up CRM Container for HubSpot CRM
     flex.CRMContainer.defaultProps.uriCallback = (task) => {
-      if(task && task.attributes.crmid)
+      if (task && task.attributes.crmid) {
         return `https://app.hubspot.com/contacts/46308290/contact/${task.attributes.crmid}`;
-      else 
-        // return 'https://app.hubspot.com/contacts/46308290/contacts/list/view/all/';
-        return 'https://v1.connie.plus';
-    }
+      } else {
+        return 'https://app.hubspot.com/contacts/46308290/contacts/list/view/all/';
+        //return 'https://v1.connie.plus';
+      }
+    };
+
+    
   }
 }
