@@ -3,7 +3,7 @@
 * If the CRM has a duplicate number, the function returns the first record (usually the oldest)
 */
 
-exports.handler=function(context, event, callback) {
+exports.handler=(context, event, callback) => {
   const axios = require('axios');
   let result = {};
   let from = event.from;
@@ -11,14 +11,14 @@ exports.handler=function(context, event, callback) {
   //if the string from contains a whatsapp prefix we need to remove it
   from = from.replace('whatsapp:','');
 
-  const url='https://api.hubapi.com/contacts/v1/search/query?q='+ from;
+  const url=`https://api.hubapi.com/contacts/v1/search/query?q=${from}`;
   axios({
       method: 'get',
       crossdomain: true,
       url: url,
-      headers: {Authorization: `Bearer `+ context.HUBSPOT_TOKEN, 'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
+      headers: {Authorization: `Bearer ${context.HUBSPOT_TOKEN}`, 'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
   })
-      .then(function(response) {
+      .then((response) => {
           // handle success - first record found
           let contact=response.data.contacts[0];
           console.log(contact.vid);
@@ -29,7 +29,7 @@ exports.handler=function(context, event, callback) {
 
           callback(null, result);
   })
-  .catch(function(error) {
+  .catch((error) => {
     // handle error
       console.log(`Error: ${error}`);
       callback(null, error);
